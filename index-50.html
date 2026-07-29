@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Public Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E1CE;
+    --paper-2:#DED5BC;
+    --paper-3:#F2EDDD;
+    --ink:#1C201B;
+    --ink-soft:#4A4E3F;
+    --green:#2F4538;
+    --green-dark:#202F26;
+    --brass:#B08D57;
+    --brass-light:#C9A76E;
+    --slate:#4A5A63;
+    --stamp:#A13D2B;
+    --line:rgba(28,32,27,0.18);
+    --line-strong:rgba(28,32,27,0.32);
+    --shadow: 0 1px 0 rgba(28,32,27,0.06), 0 8px 20px -12px rgba(28,32,27,0.35);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(rgba(28,32,27,0.035) 1px, transparent 1px);
+    background-size:3px 3px;
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{ font-family:'Fraunces',serif; }
+  .mono{ font-family:'IBM Plex Mono',monospace; }
+  button{ font-family:inherit; }
+  a{ color:inherit; }
+
+  /* ---------- Topbar ---------- */
+  .topbar{ position:sticky; top:0; z-index:40; background:var(--green); color:var(--paper-3);
+    padding:14px 16px 12px; box-shadow:0 2px 0 var(--brass), var(--shadow); }
+  .topbar-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px;}
+  .brand{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .brand-mark{ width:30px;height:30px; border:1.5px solid var(--brass-light); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace;
+    font-size:11px; color:var(--brass-light); flex-shrink:0; }
+  .brand h1{ font-size:19px; font-weight:600; margin:0; letter-spacing:0.01em; }
+  .brand .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:0.14em;
+    color:var(--brass-light); text-transform:uppercase; display:block; margin-bottom:1px;}
+  .back-btn{ background:none; border:1px solid rgba(242,237,221,0.35); color:var(--paper-3);
+    border-radius:5px; padding:7px 11px; font-size:12.5px; font-family:'IBM Plex Mono',monospace;
+    display:none; align-items:center; gap:6px; cursor:pointer; }
+  .back-btn.show{ display:inline-flex; }
+  .search-row{ margin-top:12px; display:flex; gap:8px; }
+  .search-row input{ flex:1; min-width:0; background:var(--paper-3); border:1px solid var(--green-dark);
+    border-radius:6px; padding:11px 12px; font-size:15px; color:var(--ink); font-family:'Inter',sans-serif; }
+  .search-row input::placeholder{ color:var(--ink-soft); }
+  .search-row input:focus{ outline:2px solid var(--brass-light); outline-offset:1px; }
+  .search-row button{ background:var(--brass); color:var(--green-dark); border:none; border-radius:6px;
+    padding:0 16px; font-weight:600; font-size:13.5px; cursor:pointer; }
+
+  /* ---------- Layout ---------- */
+  main{ max-width:920px; margin:0 auto; padding:18px 14px 60px; }
+  .section-label{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--ink-soft); margin:0 0 12px 2px; display:flex; align-items:center; gap:8px; }
+  .section-label::after{ content:''; flex:1; height:1px; background:var(--line-strong); }
+
+  /* ---------- Home: drawers ---------- */
+  .intro{ margin:6px 2px 22px; }
+  .intro p{ color:var(--ink-soft); font-size:14.5px; line-height:1.55; max-width:56ch; }
+  .drawer-group-label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--brass); margin:22px 2px 8px; }
+  .drawer-group-label:first-of-type{ margin-top:0; }
+  .drawers{ display:grid; grid-template-columns:1fr; gap:10px; }
+  @media(min-width:560px){ .drawers{ grid-template-columns:1fr 1fr; } }
+  .drawer{ background:var(--paper-3); border:1px solid var(--line-strong); border-radius:8px;
+    padding:16px 16px 14px; text-align:left; cursor:pointer; position:relative; overflow:hidden;
+    box-shadow:var(--shadow); transition:transform .15s ease; }
+  .drawer:active{ transform:scale(0.985); }
+  .drawer::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--drawer-color, var(--brass)); }
+  .drawer-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .drawer-code{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--brass); letter-spacing:0.08em; }
+  .drawer-pull{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft);
+    border:1px solid var(--line-strong); border-radius:4px; padding:2px 6px; white-space:nowrap;}
+  .drawer h2{ font-size:19px; margin:8px 0 4px; }
+  .drawer p{ font-size:13px; color:var(--ink-soft); line-height:1.45; margin:0; }
+  .drawer .drawer-sources{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:var(--slate); margin-top:8px; }
+
+  /* ---------- Category view ---------- */
+  .cat-header{ margin-bottom:6px; }
+  .cat-header h2{ font-size:23px; margin:0 0 4px; }
+  .cat-header .desc{ color:var(--ink-soft); font-size:13.5px; }
+  .source-tag{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em;
+    color:var(--slate); border:1px solid var(--line-strong); border-radius:4px; padding:2px 6px; margin-top:8px; }
+
+  .subcats{ display:flex; gap:6px; overflow-x:auto; margin:14px 0 2px; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
+  .subcats::-webkit-scrollbar{ display:none; }
+  .subcat-chip{ flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 13px;
+    border:1px solid var(--line-strong); border-radius:20px; background:var(--paper-3); cursor:pointer; white-space:nowrap; color:var(--ink); }
+  .subcat-chip.active{ background:var(--green); color:var(--paper-3); border-color:var(--green); }
+
+  .results-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  @media(min-width:640px){ .results-grid{ grid-template-columns:1fr 1fr 1fr; } }
+  @media(max-width:380px){ .results-grid{ grid-template-columns:1fr; } }
+
+  .card{ background:var(--paper-3); border:1px solid var(--line-strong); border-radius:7px; overflow:hidden;
+    text-align:left; cursor:pointer; position:relative; box-shadow:var(--shadow); display:flex; flex-direction:column; }
+  .card-hole{ position:absolute; top:8px; left:8px; width:8px; height:8px; border-radius:50%;
+    background:var(--paper); border:1px solid var(--line-strong); z-index:2; }
+  .card-thumb{ width:100%; aspect-ratio:4/3; background:var(--paper-2); display:flex; align-items:center;
+    justify-content:center; overflow:hidden; position:relative; }
+  .card-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .card-thumb .ph{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); text-align:center; padding:8px; }
+  .stamp{ position:absolute; bottom:6px; right:6px; font-family:'IBM Plex Mono',monospace; font-size:9px;
+    color:var(--stamp); border:1px solid var(--stamp); border-radius:3px; padding:1px 5px; transform:rotate(-4deg);
+    background:rgba(242,237,221,0.88); letter-spacing:0.04em; }
+  .card-body{ padding:9px 10px 11px; flex:1; display:flex; flex-direction:column; gap:3px; }
+  .card-title{ font-size:13px; font-weight:600; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2;
+    -webkit-box-orient:vertical; overflow:hidden; }
+  .card-meta{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); display:-webkit-box;
+    -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;}
+
+  .state-msg{ text-align:center; padding:34px 16px; color:var(--ink-soft); font-size:13.5px; }
+  .state-msg .mono{ display:block; font-size:11px; margin-top:6px; color:var(--slate); }
+  .spinner{ width:22px;height:22px;border:2px solid var(--line-strong); border-top-color:var(--brass); border-radius:50%;
+    margin:0 auto 12px; animation:spin .8s linear infinite;}
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  .ext-list{ display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+  .ext-card{ background:var(--paper-3); border:1px solid var(--line-strong); border-left:4px solid var(--brass);
+    border-radius:7px; padding:14px 16px; text-decoration:none; color:var(--ink); box-shadow:var(--shadow); display:block; }
+  .ext-card-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .ext-name{ font-family:'Fraunces',serif; font-weight:600; font-size:16px; }
+  .ext-license{ font-size:10px; color:var(--slate); }
+  .ext-card p{ font-size:13px; color:var(--ink-soft); line-height:1.5; margin:6px 0 8px; }
+  .ext-go{ font-size:11px; color:var(--brass); letter-spacing:0.04em; }
+
+  .load-more{ display:block; margin:20px auto 4px; background:none; border:1px solid var(--line-strong); color:var(--ink);
+    padding:10px 22px; border-radius:6px; font-family:'IBM Plex Mono',monospace; font-size:12px; cursor:pointer; }
+  .load-more:disabled{ opacity:0.5; }
+
+  /* ---------- Detail modal ---------- */
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(20,24,18,0.6); z-index:100; display:flex;
+    align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .18s ease; }
+  .modal-backdrop.open{ opacity:1; pointer-events:auto; }
+  @media(min-width:640px){ .modal-backdrop{ align-items:center; justify-content:center; } }
+  .modal{ background:var(--paper-3); width:100%; max-height:88vh; overflow-y:auto; border-radius:14px 14px 0 0;
+    padding:0 0 24px; transform:translateY(16px); transition:transform .18s ease; border-top:1px solid var(--line-strong); position:relative; }
+  @media(min-width:640px){ .modal{ max-width:560px; border-radius:12px; transform:translateY(0) scale(0.98); } }
+  .modal-backdrop.open .modal{ transform:translateY(0) scale(1); }
+  .modal-drag{ width:36px; height:4px; background:var(--line-strong); border-radius:2px; margin:10px auto 6px; }
+  @media(min-width:640px){ .modal-drag{ display:none; } }
+  .modal-close{ position:absolute; top:10px; right:10px; background:var(--paper); border:1px solid var(--line-strong);
+    width:30px; height:30px; border-radius:50%; font-size:16px; cursor:pointer; z-index:2; line-height:1; }
+  .modal-img-wrap{ width:100%; background:var(--paper-2); display:flex; align-items:center; justify-content:center; max-height:280px; overflow:hidden; }
+  .modal-img-wrap img{ width:100%; height:100%; object-fit:contain; max-height:280px; }
+  .modal-body{ padding:16px 20px 4px; }
+  .modal-code{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--stamp); letter-spacing:0.06em; margin-bottom:6px; display:block; }
+  .modal-title{ font-size:20px; margin:0 0 6px; line-height:1.25; }
+  .modal-meta-line{ font-size:13px; color:var(--ink-soft); margin-bottom:2px; }
+  .modal-desc{ font-size:13.5px; line-height:1.6; color:var(--ink); margin:14px 0; max-height:160px; overflow-y:auto; padding-right:2px; }
+  .modal-actions{ display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+  .btn{ display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 14px; border-radius:7px;
+    font-size:14px; font-weight:600; text-decoration:none; cursor:pointer; border:1px solid transparent; }
+  .btn-primary{ background:var(--green); color:var(--paper-3); }
+  .btn-brass{ background:var(--brass); color:var(--green-dark); }
+  .btn-outline{ background:none; border:1px solid var(--line-strong); color:var(--ink); }
+  .btn small{ font-family:'IBM Plex Mono',monospace; font-weight:500; opacity:0.75; font-size:11px; }
+  .file-list{ display:flex; flex-direction:column; gap:7px; }
+
+  .footer-note{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft);
+    margin-top:36px; line-height:1.7; padding:0 10px;}
+  .footer-note a{ color:var(--slate); }
+
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-row">
+    <div class="brand" id="brandHome">
+      <div class="brand-mark">PA</div>
+      <div>
+        <span class="eyebrow" id="catEyebrow">Reading Room</span>
+        <h1 id="topTitle">The Public Archive</h1>
+      </div>
+    </div>
+    <button class="back-btn" id="backBtn">‹ Drawers</button>
+  </div>
+  <div class="search-row" id="searchRow" hidden>
+    <input type="text" id="searchInput" placeholder="Search this drawer…" autocomplete="off">
+    <button id="searchBtn">Find</button>
+  </div>
+</header>
+
+<main>
+
+  <section id="homeView">
+    <div class="intro">
+      <p>A card catalog for work that belongs to everyone — books, comics, newspapers, film, sound, art, ephemera, and games with no copyright left to clear. Everything here is free to view and, wherever the source allows it, free to download.</p>
+    </div>
+    <div id="drawerGroups"></div>
+    <p class="footer-note">Sourced live from the Internet Archive, the Art Institute of Chicago, the Cleveland Museum of Art, the Library of Congress (incl. Chronicling America), and Wikimedia Commons.<br>Each item links back to its original record.</p>
+  </section>
+
+  <section id="categoryView" hidden>
+    <div class="cat-header">
+      <h2 id="catTitle"></h2>
+      <p class="desc" id="catDesc"></p>
+      <span class="source-tag" id="catSource"></span>
+    </div>
+    <div class="subcats" id="subcatRow" hidden></div>
+    <div id="resultsArea"></div>
+    <button class="load-more" id="loadMoreBtn" hidden>Pull more cards</button>
+  </section>
+
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <div class="modal-drag"></div>
+    <button class="modal-close" id="modalClose">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  const CATEGORIES = [
+    {
+      id:'books', code:'D—01', label:'Books', color:'#2F4538', group:'Reading Room',
+      blurb:'Full-length public domain texts scanned and hosted by the Internet Archive.',
+      source:'archive', mediatype:'texts',
+      excludeCollections:['comics','magazine_rack','pulpmagazinearchive','opensource'],
+      sourceTag:'Internet Archive · texts', fileExts:['pdf','epub'],
+      subcats:[
+        {label:'All', q:'AND collection:(gutenberg OR americana OR library_of_congress)'},
+        {label:'Literature', q:'AND collection:(gutenberg OR americana) AND subject:(fiction OR literature OR novel)'},
+        {label:"Children's", q:'AND collection:(gutenberg OR americana) AND subject:(juvenile OR "children\'s stories")'},
+        {label:'History', q:'AND collection:(gutenberg OR americana OR library_of_congress) AND subject:(history)'},
+        {label:'Reference', q:'AND collection:(gutenberg OR americana OR library_of_congress) AND subject:(encyclopedias OR dictionaries OR reference)'},
+        {label:'Religious', q:'AND collection:(gutenberg OR americana) AND subject:(religion OR bible OR theology)'}
+      ]
+    },
+    {
+      id:'comics', code:'D—02', label:'Comics & Pulp', color:'#A13D2B', group:'Reading Room',
+      blurb:'Golden-age comic books and pulp magazines, cover to cover.',
+      source:'archive', mediatype:'texts',
+      excludeCollections:['opensource'],
+      sourceTag:'Internet Archive · comics', fileExts:['pdf','cbz','cbr','epub'],
+      subcats:[
+        {label:'All', q:'AND collection:(comics OR pulpmagazinearchive)'},
+        {label:'Comics', q:'AND collection:(comics)'},
+        {label:'Pulp Magazines', q:'AND collection:(pulpmagazinearchive)'}
+      ]
+    },
+    {
+      id:'magazines', code:'D—03', label:'Magazines', color:'#B08D57', group:'Reading Room',
+      blurb:'Vintage periodicals, trade journals, and illustrated magazines.',
+      source:'archive', mediatype:'texts', collection:'magazine_rack',
+      excludeCollections:['opensource'],
+      sourceTag:'Internet Archive · magazine_rack', fileExts:['pdf','epub'],
+      subcats:[
+        {label:'All', q:''},
+        {label:'Gaming & Computing', q:'AND subject:(gaming OR "video games" OR computer OR computing)'},
+        {label:'Electronics & Science', q:'AND subject:(electronics OR science OR technology)'},
+        {label:'Hobby & Lifestyle', q:'AND subject:(hobby OR craft OR lifestyle OR outdoors)'}
+      ]
+    },
+    {
+      id:'newspapers', code:'D—04', label:'Newspapers', color:'#4A5A63', group:'Reading Room',
+      blurb:'Historic American newspaper pages, searchable by name, date, and place.',
+      source:'chronam', sourceTag:'Library of Congress · Chronicling America',
+      subcats:[
+        {label:'All', dateRange:null},
+        {label:'1700s–1800s', dateRange:{date1:'1756', date2:'1899'}},
+        {label:'Early 1900s', dateRange:{date1:'1900', date2:'1929'}},
+        {label:'1930s–1963', dateRange:{date1:'1930', date2:'1963'}}
+      ]
+    },
+    {
+      id:'films', code:'D—05', label:'Films & Video', color:'#4A5A63', group:'Screening Room',
+      blurb:'Feature films, newsreels, shorts, and educational reels.',
+      source:'archive', mediatype:'movies', excludeCollections:['opensource'],
+      sourceTag:'Internet Archive · movies', fileExts:['mp4','ogv','mpeg'],
+      subcats:[
+        {label:'All', q:'AND collection:(feature_films OR prelinger OR classic_tv OR newsandpublicaffairs)'},
+        {label:'Feature Films', q:'AND collection:(feature_films)'},
+        {label:'Educational & Industrial', q:'AND collection:(prelinger)'},
+        {label:'Newsreels', q:'AND collection:(newsandpublicaffairs)'},
+        {label:'Classic TV', q:'AND collection:(classic_tv)'}
+      ]
+    },
+    {
+      id:'audio', code:'D—06', label:'Music & Recordings', color:'#2F4538', group:'Screening Room',
+      blurb:'78s, field recordings, radio broadcasts, and public domain music.',
+      source:'archive', mediatype:'audio', excludeCollections:['opensource'],
+      sourceTag:'Internet Archive · audio', fileExts:['mp3','ogg','flac'],
+      subcats:[
+        {label:'All', q:'AND collection:(georgeblood OR oldtimeradio OR netlabels)'},
+        {label:'78 RPM & Early Recordings (partial — see note)', q:'AND collection:(georgeblood)'},
+        {label:'Old-Time Radio', q:'AND collection:(oldtimeradio)'},
+        {label:'Netlabel & CC Music', q:'AND collection:(netlabels)'}
+      ]
+    },
+    {
+      id:'games', code:'D—07', label:'Computer & Video Games', color:'#A13D2B', group:'Software Shelf',
+      blurb:'Playable DOS games, arcade cabinets, and console titles, emulated in the browser.',
+      source:'archive', mediatype:'software',
+      sourceTag:'Internet Archive · software', fileExts:['zip'],
+      subcats:[
+        {label:'All', q:'AND collection:(softwarelibrary_msdos_games OR internetarcade OR consolelivingroom)'},
+        {label:'MS-DOS Games', q:'AND collection:(softwarelibrary_msdos_games)'},
+        {label:'Arcade Cabinets', q:'AND collection:(internetarcade)'},
+        {label:'Console Games', q:'AND collection:(consolelivingroom)'}
+      ]
+    },
+    {
+      id:'freeware', code:'D—16', label:'Freeware & Utilities', color:'#4A5A63', group:'Software Shelf',
+      blurb:'Old shareware, freeware, and utility software — the stuff everyone actually used.',
+      source:'archive', mediatype:'software', excludeCollections:['opensource'],
+      sourceTag:'Internet Archive · Tucows + Software Library + Macintosh Garden', fileExts:['zip','exe','sit','img'],
+      subcats:[
+        {label:'All', q:'AND collection:(tucows OR softwarelibrary_msdos OR softwarelibrary_win3 OR Macintosh_Garden_Collection)'},
+        {label:'Freeware Games', q:'AND collection:(tucows) AND subject:(games OR game OR "video game")'},
+        {label:'MS-DOS Utilities', q:'AND collection:(softwarelibrary_msdos)'},
+        {label:'Windows 3.x/9x Shareware', q:'AND collection:(softwarelibrary_win3 OR tucows)'},
+        {label:'Classic Mac Freeware', q:'AND collection:(Macintosh_Garden_Collection)'}
+      ]
+    },
+    {
+      id:'art', code:'D—08', label:'Artwork & Posters', color:'#B08D57', group:'Gallery',
+      blurb:'Paintings, prints, and posters released under open access by museums.',
+      source:'art', sourceTag:'Art Institute of Chicago + Cleveland Museum of Art + Minneapolis Institute of Art + Openverse',
+      subcats:[
+        {label:'All', term:''},
+        {label:'Paintings', term:'painting'},
+        {label:'Posters & Prints', term:'poster'},
+        {label:'Photography', term:'photograph'},
+        {label:'Sculpture', term:'sculpture'},
+        {label:'Natural History Illustrations', term:'natural history illustration'}
+      ]
+    },
+    {
+      id:'photo', code:'D—09', label:'Photographs & Prints', color:'#4A5A63', group:'Gallery',
+      blurb:'Historic photographs, prints, and posters from public collections.',
+      source:'photo', sourceTag:'Library of Congress + Wikimedia Commons',
+      subcats:[
+        {label:'All', term:''},
+        {label:'Portraits & People', term:'portrait'},
+        {label:'Landscapes & Places', term:'landscape'},
+        {label:'Posters', term:'poster'},
+        {label:'Historic Events', term:'historic event'}
+      ]
+    },
+    {
+      id:'ephemera', code:'D—10', label:'Vintage Ads & Ephemera', color:'#B08D57', group:'Gallery',
+      blurb:'Advertisements, postcards, catalogs, brochures, and other printed ephemera.',
+      source:'archive', mediatype:'', collection:'(vintageadvertising OR ephemera)',
+      sourceTag:'Internet Archive · ephemera', fileExts:['jpg','pdf','tif'],
+      subcats:[
+        {label:'All', q:''},
+        {label:'Advertising', q:'AND collection:(vintageadvertising)'},
+        {label:'Ephemera', q:'AND collection:(ephemera)'},
+        {label:'Sheet Music & Song Covers', q:'AND collection:(folkscanomy_sheetmusic)'}
+      ]
+    },
+    {
+      id:'sfx', code:'D—11', label:'Sound Effects & Foley', color:'#4A5A63', group:'Screening Room',
+      blurb:'Foley, ambience, and effects clips — no music licensing to worry about.',
+      source:'sfx', mediatype:'audio', excludeCollections:['opensource'],
+      sourceTag:'Openverse (CC0/PDM) + Internet Archive · audio', fileExts:['mp3','wav','ogg','flac'],
+      subcats:[
+        {label:'All', term:''},
+        {label:'Ambience & Nature', term:'ambience nature field recording'},
+        {label:'Foley & Mechanical', term:'foley mechanical impact'},
+        {label:'UI & Digital', term:'interface digital electronic beep'}
+      ]
+    },
+    {
+      id:'animation', code:'D—12', label:'Animation & Cartoons', color:'#2F4538', group:'Screening Room',
+      blurb:'Classic animated shorts — Fleischer, Terrytoons, and other public domain cartoons.',
+      source:'archive', mediatype:'movies',
+      subjectFilter:'subject:(cartoon OR cartoons OR animation OR animated)',
+      excludeCollections:['opensource'],
+      sourceTag:'Internet Archive · movies (animation)', fileExts:['mp4','ogv','mpeg'],
+      subcats:[
+        {label:'All', q:''},
+        {label:'Silent Era', q:'AND subject:(silent)'},
+        {label:'Sound Era', q:'AND NOT subject:(silent)'}
+      ]
+    },
+    {
+      id:'assets', code:'D—13', label:'Game Assets & Source Code', color:'#B08D57', group:'Software Shelf',
+      blurb:'Sprites, textures, fonts, and SFX packs for your own builds, plus historic and open source code — openly licensed, hosted elsewhere. This drawer launches a search on each library rather than browsing in-app, since none of them offer a public catalog API.',
+      source:'external', sourceTag:'OpenGameArt · Kenney · Freesound · itch.io · GitHub · Computer History Museum',
+      subcats:[
+        {label:'All', term:''},
+        {label:'Sprites & Characters', term:'sprites'},
+        {label:'Textures & Tiles', term:'textures'},
+        {label:'UI & Fonts', term:'ui kit'},
+        {label:'Audio & Music', term:'music'},
+        {label:'Open Source Code', term:'game engine'}
+      ],
+      externalLinks:[
+        {name:'OpenGameArt.org', license:'CC0 / CC-BY (mixed)', blurb:'Sprites, tilesets, textures, and chiptune music contributed by other devs.', url:q=>`https://opengameart.org/art-search-advanced?keys=${encodeURIComponent(q||'')}`},
+        {name:'Kenney Assets', license:'CC0', blurb:'Clean, consistent sprite and UI packs — everything is public domain, no attribution required.', url:q=>'https://kenney.nl/assets'+(q?('?s='+encodeURIComponent(q)):'')},
+        {name:'Freesound', license:'mostly CC0 / CC-BY', blurb:'Searchable library of sound effects and foley, filterable by license.', url:q=>`https://freesound.org/search/?q=${encodeURIComponent(q||'')}`},
+        {name:'itch.io Game Assets', license:'mixed — filter on-site', blurb:'Community asset packs; many are free and openly licensed.', url:q=>`https://itch.io/search?q=${encodeURIComponent(q||'')}`},
+        {name:'itch.io Free Games', license:'freeware — filter on-site', blurb:'Independent and homebrew games, filterable to free-only, across every platform.', url:q=>q?`https://itch.io/search?q=${encodeURIComponent(q)}&price=free`:'https://itch.io/games/free'},
+        {name:'GitHub', license:'varies — mostly open source', blurb:'Source code for open source games, engines, and tools — including id Software\'s Doom, Wolfenstein, and Quake releases.', url:q=>`https://github.com/search?q=${encodeURIComponent(q||'open source game')}&type=repositories`},
+        {name:'Computer History Museum — Source Code', license:'non-commercial use only, not public domain', blurb:'Original source for historic software: Apple II DOS, MacPaint, Photoshop 1.0, Xerox Alto, early MS-DOS, and more.', url:q=>'https://computerhistory.org/playlists/source-code/'}
+      ]
+    },
+    {
+      id:'maps', code:'D—14', label:'Maps', color:'#2F4538', group:'Reference & Science',
+      blurb:'Historic maps, atlases, and cartography from public collections.',
+      source:'maps', sourceTag:'Library of Congress + Openverse',
+      subcats:[
+        {label:'All', term:''},
+        {label:'City & Street Maps', term:'city street map'},
+        {label:'Nautical & Topographic', term:'nautical topographic'},
+        {label:'World & Historical Atlases', term:'atlas world'}
+      ]
+    },
+    {
+      id:'space', code:'D—15', label:'NASA & Space', color:'#4A5A63', group:'Reference & Science',
+      blurb:'Mission photography, spacecraft imagery, and footage — all public domain by law.',
+      source:'nasa', sourceTag:'NASA Image and Video Library',
+      subcats:[
+        {label:'All', mediaType:''},
+        {label:'Photos', mediaType:'image'},
+        {label:'Video', mediaType:'video'}
+      ]
+    }
+  ];
+
+  const state = { activeCat:null, subcat:null, query:'', page:1, results:[], loading:false, done:false };
+
+  const $ = sel => document.querySelector(sel);
+  const homeView = $('#homeView'), catView = $('#categoryView');
+  const resultsArea = $('#resultsArea'), loadMoreBtn = $('#loadMoreBtn');
+  const searchRow = $('#searchRow'), searchInput = $('#searchInput'), searchBtn = $('#searchBtn');
+  const backBtn = $('#backBtn'), catEyebrow = $('#catEyebrow'), topTitle = $('#topTitle');
+  const subcatRow = $('#subcatRow');
+
+  function escapeHtml(s){
+    return (s==null?'':String(s)).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function stripHtml(s){ return (s||'').replace(/<[^>]*>/g,''); }
+  function truncate(s, n){ s = s||''; return s.length>n ? s.slice(0,n-1)+'…' : s; }
+
+  // ---------- Home ----------
+  function renderHome(){
+    const groups = [];
+    CATEGORIES.forEach(c=>{ if(!groups.includes(c.group)) groups.push(c.group); });
+    const wrap = $('#drawerGroups');
+    wrap.innerHTML = groups.map(g=>{
+      const cats = CATEGORIES.filter(c=>c.group===g);
+      return `
+        <p class="drawer-group-label">${escapeHtml(g)}</p>
+        <div class="drawers">
+          ${cats.map(c=>`
+            <button class="drawer" style="--drawer-color:${c.color}" data-cat="${c.id}">
+              <div class="drawer-top">
+                <span class="drawer-code mono">${c.code}</span>
+                <span class="drawer-pull mono">pull open →</span>
+              </div>
+              <h2>${c.label}</h2>
+              <p>${c.blurb}</p>
+              <div class="drawer-sources">${escapeHtml(c.sourceTag)}</div>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }).join('');
+    wrap.querySelectorAll('.drawer').forEach(btn=>{
+      btn.addEventListener('click', ()=> openCategory(btn.dataset.cat));
+    });
+  }
+
+  function goHome(){
+    state.activeCat = null;
+    homeView.hidden = false; catView.hidden = true;
+    searchRow.hidden = true; backBtn.classList.remove('show');
+    catEyebrow.textContent = 'Reading Room'; topTitle.textContent = 'The Public Archive';
+  }
+
+  function openCategory(id){
+    const cat = CATEGORIES.find(c=>c.id===id);
+    if(!cat) return;
+    state.activeCat = cat; state.query=''; state.page=1; state.results=[]; state.done=false;
+    state.subcat = cat.subcats ? cat.subcats[0] : null;
+    homeView.hidden = true; catView.hidden = false;
+    searchRow.hidden = false; backBtn.classList.add('show');
+    catEyebrow.textContent = cat.code; topTitle.textContent = cat.label;
+    $('#catTitle').textContent = cat.label;
+    $('#catDesc').textContent = cat.blurb;
+    $('#catSource').textContent = cat.sourceTag;
+    searchInput.value = '';
+    searchInput.placeholder = `Search ${cat.label.toLowerCase()}…`;
+
+    if(cat.subcats){
+      subcatRow.hidden = false;
+      subcatRow.innerHTML = cat.subcats.map((s,i)=>`<button class="subcat-chip${i===0?' active':''}" data-i="${i}">${escapeHtml(s.label)}</button>`).join('');
+      subcatRow.querySelectorAll('.subcat-chip').forEach(chip=>{
+        chip.addEventListener('click', ()=>{
+          subcatRow.querySelectorAll('.subcat-chip').forEach(c=>c.classList.remove('active'));
+          chip.classList.add('active');
+          state.subcat = cat.subcats[parseInt(chip.dataset.i,10)];
+          runSearch(true);
+        });
+      });
+    } else {
+      subcatRow.hidden = true; subcatRow.innerHTML = '';
+    }
+    runSearch(true);
+  }
+
+  backBtn.addEventListener('click', goHome);
+  $('#brandHome').addEventListener('click', goHome);
+  searchBtn.addEventListener('click', ()=>{ state.query = searchInput.value.trim(); runSearch(true); });
+  searchInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ state.query = searchInput.value.trim(); runSearch(true); } });
+  loadMoreBtn.addEventListener('click', ()=> runSearch(false));
+
+  // ---------- Fetchers ----------
+  async function fetchArchive(cat, subQ, query, page){
+    let q = cat.mediatype ? `mediatype:(${cat.mediatype})` : '';
+    if(cat.collection) q += (q?' AND ':'') + `collection:${cat.collection}`;
+    if(cat.subjectFilter) q += (q?' AND ':'') + cat.subjectFilter;
+    if(subQ) q += ` ${subQ}`;
+    if(cat.excludeCollections) cat.excludeCollections.forEach(c=> q += ` AND NOT collection:(${c})`);
+    if(query) q += ` AND (${query})`;
+    const params = new URLSearchParams();
+    params.set('q', q);
+    ['identifier','title','creator','year','description','downloads'].forEach(f=>params.append('fl[]',f));
+    params.append('sort[]','downloads desc');
+    params.set('rows','18');
+    params.set('page', String(page));
+    params.set('output','json');
+    const url = `https://archive.org/advancedsearch.php?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('archive search failed');
+    const data = await res.json();
+    const docs = (data.response && data.response.docs) || [];
+    return docs.map(d=>({
+      id: d.identifier,
+      title: d.title || d.identifier,
+      meta: [d.creator, d.year].filter(Boolean).join(' · '),
+      desc: Array.isArray(d.description) ? d.description.join(' ') : d.description,
+      thumb: `https://archive.org/services/img/${d.identifier}`,
+      detailUrl: `https://archive.org/details/${d.identifier}`,
+      _source:'archive', _cat:cat
+    }));
+  }
+
+  async function fetchAic(cat, query, page){
+    const params = new URLSearchParams();
+    params.set('q', query || 'painting');
+    params.set('fields','id,title,artist_display,date_display,image_id,is_public_domain');
+    params.set('limit','9');
+    params.set('page', String(page));
+    const url = `https://api.artic.edu/api/v1/artworks/search?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('aic search failed');
+    const data = await res.json();
+    const base = (data.config && data.config.iiif_url) || 'https://www.artic.edu/iiif/2';
+    const items = (data.data || []).filter(d=>d.image_id);
+    return items.map(d=>({
+      id: 'aic-'+d.id,
+      title: d.title || 'Untitled',
+      meta: [d.artist_display, d.date_display].filter(Boolean).join(' · ').replace(/\n/g,' '),
+      desc: d.is_public_domain ? 'Public domain — open access image, free to download and reuse.' : 'Open access record.',
+      thumb: `${base}/${d.image_id}/full/500,/0/default.jpg`,
+      download: `${base}/${d.image_id}/full/full/0/default.jpg`,
+      detailUrl: `https://www.artic.edu/artworks/${d.id}`,
+      _source:'museum', _cat:cat
+    }));
+  }
+
+  async function fetchCleveland(cat, query, page){
+    const params = new URLSearchParams();
+    if(query) params.set('q', query);
+    params.set('has_image','1');
+    params.set('limit','9');
+    params.set('skip', String((page-1)*9));
+    const url = `https://openaccess-api.clevelandart.org/api/artworks/?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('cma search failed');
+    const data = await res.json();
+    const items = (data.data || []).filter(d=>d.images && (d.images.web || d.images.full));
+    return items.map(d=>{
+      const img = (d.images.web || d.images.full || d.images.print);
+      const full = (d.images.full || d.images.print || d.images.web);
+      const creators = (d.creators||[]).map(c=>c.description).filter(Boolean).join(', ');
+      return {
+        id: 'cma-'+d.id,
+        title: d.title || 'Untitled',
+        meta: [creators, d.creation_date].filter(Boolean).join(' · '),
+        desc: d.share_license_status ? `${d.share_license_status} — open access image from the Cleveland Museum of Art.` : 'Open access record.',
+        thumb: img ? img.url : null,
+        download: full ? full.url : (img ? img.url : null),
+        detailUrl: `https://www.clevelandart.org/art/${d.accession_number || d.id}`,
+        _source:'museum', _cat:cat
+      };
+    });
+  }
+
+  async function fetchOpenverse(cat, mediaType, query, page, pageSize){
+    const params = new URLSearchParams();
+    params.set('q', query || '');
+    params.set('license','cc0,pdm');
+    params.set('page', String(page));
+    params.set('page_size', String(pageSize || 18));
+    const url = `https://api.openverse.org/v1/${mediaType}/?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('openverse search failed');
+    const data = await res.json();
+    const results = data.results || [];
+    return results.map(d=>({
+      id: 'ov-'+d.id,
+      title: d.title || (mediaType==='audio' ? 'Untitled recording' : 'Untitled'),
+      meta: [d.creator, d.source].filter(Boolean).join(' · '),
+      desc: `${(d.license||'').toUpperCase()} — via Openverse, source: ${d.source || 'unknown'}.`,
+      thumb: mediaType==='audio' ? null : (d.thumbnail || d.url),
+      download: d.url,
+      detailUrl: d.foreign_landing_url || d.url,
+      _source:'museum', _cat:cat
+    }));
+  }
+
+  async function fetchMia(cat, query, page){
+    if(page > 1) return []; // Mia's search endpoint doesn't document a page parameter
+    const url = `https://search.artsmia.org/${encodeURIComponent(query || 'painting')}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('mia search failed');
+    const data = await res.json();
+    const hits = (data.hits && data.hits.hits) ? data.hits.hits.map(h=>h._source || h)
+      : (Array.isArray(data) ? data : (data.results || []));
+    return hits.filter(d=>d && d.image==='valid' && !d.restricted).slice(0,9).map(d=>{
+      const idNum = (d.id||'').toString().split('/').pop();
+      return {
+        id: 'mia-'+idNum,
+        title: d.title || 'Untitled',
+        meta: [d.artist, d.dated].filter(Boolean).join(' · '),
+        desc: 'Open access — Minneapolis Institute of Art.',
+        thumb: idNum ? `https://api.artsmia.org/images/${idNum}/medium.jpg` : null,
+        download: idNum ? `https://api.artsmia.org/images/${idNum}/large.jpg` : null,
+        detailUrl: idNum ? `https://collections.artsmia.org/art/${idNum}` : 'https://collections.artsmia.org',
+        _source:'museum', _cat:cat
+      };
+    }).filter(d=>d.thumb);
+  }
+
+  async function fetchArt(cat, query, page){
+    const [aicRes, cmaRes, ovRes, miaRes] = await Promise.allSettled([
+      fetchAic(cat, query, page),
+      fetchCleveland(cat, query, page),
+      fetchOpenverse(cat, 'images', query, page, 9),
+      fetchMia(cat, query, page)
+    ]);
+    let items = [];
+    if(aicRes.status==='fulfilled') items = items.concat(aicRes.value);
+    if(cmaRes.status==='fulfilled') items = items.concat(cmaRes.value);
+    if(ovRes.status==='fulfilled') items = items.concat(ovRes.value);
+    if(miaRes.status==='fulfilled') items = items.concat(miaRes.value);
+    if(items.length===0) throw new Error('art sources failed');
+    return items;
+  }
+
+  async function fetchLoc(cat, query, page){
+    const params = new URLSearchParams();
+    params.set('q', query || 'poster');
+    params.set('fo','json');
+    params.set('c','18');
+    params.set('sp', String(page));
+    const url = `https://www.loc.gov/search/?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('loc search failed');
+    const data = await res.json();
+    const items = (data.results || []).filter(d=>d.image_url && d.image_url.length);
+    return items.map(d=>({
+      id: 'loc-'+(d.id || d.number_lccn || Math.random().toString(36).slice(2)),
+      title: d.title || 'Untitled',
+      meta: [d.date, (d.contributor||[]).join(', ')].filter(Boolean).join(' · '),
+      desc: Array.isArray(d.description) ? d.description.join(' ') : (d.description || ''),
+      thumb: d.image_url[0],
+      download: d.image_url[d.image_url.length-1],
+      detailUrl: d.id,
+      _source:'loc', _cat:cat
+    }));
+  }
+
+  async function fetchWikimedia(cat, query, page){
+    const params = new URLSearchParams();
+    params.set('action','query');
+    params.set('generator','search');
+    params.set('gsrsearch', query || 'poster');
+    params.set('gsrnamespace','6');
+    params.set('gsrlimit','12');
+    params.set('gsroffset', String((page-1)*12));
+    params.set('prop','imageinfo');
+    params.set('iiprop','url|extmetadata');
+    params.set('iiurlwidth','500');
+    params.set('format','json');
+    params.set('origin','*');
+    const url = `https://commons.wikimedia.org/w/api.php?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('wikimedia search failed');
+    const data = await res.json();
+    const pages = (data.query && data.query.pages) ? Object.values(data.query.pages) : [];
+    return pages.map(p=>{
+      const info = p.imageinfo && p.imageinfo[0];
+      if(!info) return null;
+      const meta = info.extmetadata || {};
+      const artist = meta.Artist ? stripHtml(meta.Artist.value) : '';
+      const date = meta.DateTimeOriginal ? stripHtml(meta.DateTimeOriginal.value) : (meta.Date ? stripHtml(meta.Date.value) : '');
+      return {
+        id: 'wiki-'+p.pageid,
+        title: (p.title||'').replace(/^File:/,'').replace(/\.[a-zA-Z0-9]+$/,''),
+        meta: [artist, date].filter(Boolean).join(' · '),
+        desc: meta.ImageDescription ? stripHtml(meta.ImageDescription.value) : 'Public domain / openly licensed image via Wikimedia Commons.',
+        thumb: info.thumburl || info.url,
+        download: info.url,
+        detailUrl: info.descriptionurl,
+        _source:'museum', _cat:cat
+      };
+    }).filter(Boolean);
+  }
+
+  async function fetchPhoto(cat, query, page){
+    let items = [];
+    try{ items = await fetchLoc(cat, query, page); }catch(e){ items = []; }
+    if(items.length < 6){
+      try{
+        const wiki = await fetchWikimedia(cat, query, page);
+        items = items.concat(wiki);
+      }catch(e){ /* keep whatever LOC gave us */ }
+    }
+    if(items.length < 10){
+      try{
+        const ov = await fetchOpenverse(cat, 'images', query, page, 9);
+        items = items.concat(ov);
+      }catch(e){ /* keep whatever we have */ }
+    }
+    if(items.length===0) throw new Error('photo sources returned nothing');
+    return items;
+  }
+
+  async function fetchMaps(cat, query, page){
+    const params = new URLSearchParams();
+    params.set('q', query || 'map');
+    params.set('fo','json');
+    params.set('c','18');
+    params.set('sp', String(page));
+    const url = `https://www.loc.gov/maps/?${params.toString()}`;
+    let items = [];
+    try{
+      const res = await fetch(url);
+      if(res.ok){
+        const data = await res.json();
+        items = (data.results || []).filter(d=>d.image_url && d.image_url.length).map(d=>({
+          id: 'locmap-'+(d.id || Math.random().toString(36).slice(2)),
+          title: d.title || 'Untitled map',
+          meta: [d.date, (d.contributor||[]).join(', ')].filter(Boolean).join(' · '),
+          desc: Array.isArray(d.description) ? d.description.join(' ') : (d.description || ''),
+          thumb: d.image_url[0],
+          download: d.image_url[d.image_url.length-1],
+          detailUrl: d.id,
+          _source:'loc', _cat:cat
+        }));
+      }
+    }catch(e){ /* fall through to Openverse below */ }
+    if(items.length < 8){
+      try{
+        const ov = await fetchOpenverse(cat, 'images', (query?query+' map':'map'), page, 12);
+        items = items.concat(ov);
+      }catch(e){ /* keep whatever we have */ }
+    }
+    if(items.length===0) throw new Error('map sources returned nothing');
+    return items;
+  }
+
+  async function fetchNasa(cat, query, page, mediaType){
+    const params = new URLSearchParams();
+    params.set('q', query || 'nasa');
+    if(mediaType) params.set('media_type', mediaType);
+    params.set('page', String(page));
+    params.set('page_size','18');
+    const url = `https://images-api.nasa.gov/search?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('nasa search failed');
+    const data = await res.json();
+    const items = (data.collection && data.collection.items) || [];
+    return items.map(d=>{
+      const info = (d.data && d.data[0]) || {};
+      const linkItem = (d.links && d.links[0]) || {};
+      return {
+        id: 'nasa-'+info.nasa_id,
+        title: info.title || 'Untitled',
+        meta: [info.center, info.date_created ? info.date_created.slice(0,10) : ''].filter(Boolean).join(' · '),
+        desc: info.description || 'Public domain NASA media.',
+        thumb: linkItem.href || null,
+        detailUrl: `https://images.nasa.gov/details/${info.nasa_id}`,
+        _source:'nasa', _cat:cat, _nasaId: info.nasa_id
+      };
+    }).filter(d=>d._nasaId);
+  }
+
+  async function fetchSfx(cat, term, query, page){
+    const combined = [term, query].filter(Boolean).join(' ') || 'sound effect';
+    let items = [];
+    try{ items = await fetchOpenverse(cat, 'audio', combined, page, 18); }catch(e){ items = []; }
+    if(items.length < 6){
+      try{
+        const arch = await fetchArchive(cat, '', combined, page);
+        items = items.concat(arch);
+      }catch(e){ /* keep whatever Openverse gave us */ }
+    }
+    if(items.length===0) throw new Error('sfx sources returned nothing');
+    return items;
+  }
+
+  async function fetchChronAm(cat, query, page, range){
+    const params = new URLSearchParams();
+    params.set('andtext', query || 'news');
+    params.set('format','json');
+    params.set('rows','18');
+    params.set('page', String(page));
+    if(range){
+      params.set('date1', range.date1);
+      params.set('date2', range.date2);
+      params.set('dateFilterType','range');
+    }
+    const url = `https://chroniclingamerica.loc.gov/search/pages/results/?${params.toString()}`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('chronam search failed');
+    const data = await res.json();
+    const items = (data.items || []);
+    return items.map(d=>{
+      const idPath = d.id || '';
+      const trimmed = idPath.replace(/\/$/,'');
+      return {
+        id: 'chronam-'+idPath,
+        title: d.title || d.title_normal || 'Untitled newspaper page',
+        meta: [d.date, d.place_of_publication || (d.place||[]).join(', ')].filter(Boolean).join(' · '),
+        desc: 'Digitized newspaper page from the U.S. Library of Congress Chronicling America collection.',
+        thumb: idPath ? `https://chroniclingamerica.loc.gov${idPath}thumbnail.jpg` : null,
+        download: trimmed ? `https://chroniclingamerica.loc.gov${trimmed}.pdf` : null,
+        detailUrl: idPath ? `https://chroniclingamerica.loc.gov${idPath}` : 'https://chroniclingamerica.loc.gov',
+        _source:'chronam', _cat:cat
+      };
+    });
+  }
+
+  function renderExternalLinks(cat, query){
+    loadMoreBtn.hidden = true;
+    resultsArea.innerHTML = `<div class="ext-list" id="extList"></div>`;
+    const list = $('#extList');
+    list.innerHTML = cat.externalLinks.map(s=>`
+      <a class="ext-card" href="${s.url(query)}" target="_blank" rel="noopener">
+        <div class="ext-card-top">
+          <span class="ext-name">${escapeHtml(s.name)}</span>
+          <span class="ext-license mono">${escapeHtml(s.license)}</span>
+        </div>
+        <p>${escapeHtml(s.blurb)}</p>
+        <span class="ext-go mono">Search ↗</span>
+      </a>
+    `).join('');
+  }
+
+  async function runSearch(reset){
+    const cat = state.activeCat;
+    if(!cat || state.loading) return;
+    if(cat.source==='external'){
+      const term = state.subcat && state.subcat.term ? state.subcat.term : '';
+      const q = [state.query, term].filter(Boolean).join(' ');
+      renderExternalLinks(cat, q);
+      return;
+    }
+    if(reset){ state.page = 1; state.results = []; state.done = false; resultsArea.innerHTML=''; }
+    state.loading = true;
+    if(reset) showLoading();
+    loadMoreBtn.disabled = true;
+    try{
+      let items = [];
+      const subcat = state.subcat;
+      if(cat.source==='archive'){
+        const subQ = subcat && subcat.q ? subcat.q : '';
+        items = await fetchArchive(cat, subQ, state.query, state.page);
+      }
+      else if(cat.source==='art'){
+        const term = subcat && subcat.term ? subcat.term : '';
+        const q = [state.query, term].filter(Boolean).join(' ');
+        items = await fetchArt(cat, q, state.page);
+      }
+      else if(cat.source==='photo'){
+        const term = subcat && subcat.term ? subcat.term : '';
+        const q = [state.query, term].filter(Boolean).join(' ');
+        items = await fetchPhoto(cat, q, state.page);
+      }
+      else if(cat.source==='maps'){
+        const term = subcat && subcat.term ? subcat.term : '';
+        const q = [state.query, term].filter(Boolean).join(' ');
+        items = await fetchMaps(cat, q, state.page);
+      }
+      else if(cat.source==='nasa'){
+        const mt = subcat && subcat.mediaType ? subcat.mediaType : '';
+        items = await fetchNasa(cat, state.query, state.page, mt);
+      }
+      else if(cat.source==='sfx'){
+        const term = subcat && subcat.term ? subcat.term : '';
+        items = await fetchSfx(cat, term, state.query, state.page);
+      }
+      else if(cat.source==='chronam'){
+        const range = subcat && subcat.dateRange ? subcat.dateRange : null;
+        items = await fetchChronAm(cat, state.query, state.page, range);
+      }
+
+      if(items.length===0 && reset){
+        showEmpty();
+      } else {
+        state.results = state.results.concat(items);
+        renderResults();
+      }
+      if(items.length < 10) { state.done = true; loadMoreBtn.hidden = true; }
+      else { loadMoreBtn.hidden = false; loadMoreBtn.disabled = false; }
+      state.page += 1;
+    }catch(err){
+      console.error(err);
+      if(reset) showError();
+    }finally{
+      state.loading = false;
+    }
+  }
+
+  function showLoading(){
+    resultsArea.innerHTML = `<div class="state-msg"><div class="spinner"></div>Pulling cards from the drawer…</div>`;
+    loadMoreBtn.hidden = true;
+  }
+  function showEmpty(){
+    resultsArea.innerHTML = `<div class="state-msg">No cards match that search.<span class="mono">Try a broader term, or clear the search box.</span></div>`;
+    loadMoreBtn.hidden = true;
+  }
+  function showError(){
+    resultsArea.innerHTML = `<div class="state-msg">Couldn't reach the source archive just now.<span class="mono">Check your connection and try again.</span></div>`;
+    loadMoreBtn.hidden = true;
+  }
+
+  function renderResults(){
+    if(resultsArea.querySelector('.results-grid')==null){
+      resultsArea.innerHTML = `<div class="results-grid" id="grid"></div>`;
+    }
+    const grid = $('#grid');
+    const startIdx = grid.children.length;
+    const html = state.results.slice(startIdx).map((item, i)=>{
+      const num = String(startIdx + i + 1).padStart(3,'0');
+      const thumbHtml = item.thumb
+        ? `<img loading="lazy" src="${item.thumb}" alt="" onerror="this.closest('.card-thumb').innerHTML='<div class=&quot;ph&quot;>No preview available</div>'">`
+        : `<div class="ph">No preview available</div>`;
+      return `
+      <div class="card" data-idx="${startIdx+i}">
+        <div class="card-hole"></div>
+        <div class="card-thumb">
+          ${thumbHtml}
+          <span class="stamp mono">${item._cat.code}·${num}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${escapeHtml(truncate(item.title,70))}</div>
+          <div class="card-meta mono">${escapeHtml(truncate(item.meta||'—',40))}</div>
+        </div>
+      </div>`;
+    }).join('');
+    grid.insertAdjacentHTML('beforeend', html);
+    grid.querySelectorAll('.card').forEach(card=>{
+      card.addEventListener('click', ()=> openDetail(state.results[parseInt(card.dataset.idx,10)]));
+    });
+  }
+
+  // ---------- Detail modal ----------
+  const modalBackdrop = $('#modalBackdrop'), modalContent = $('#modalContent');
+  function closeModal(){ modalBackdrop.classList.remove('open'); }
+  $('#modalClose').addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', e=>{ if(e.target===modalBackdrop) closeModal(); });
+
+  async function openDetail(item){
+    const imgHtml = item.thumb ? `<div class="modal-img-wrap"><img src="${item.thumb}" alt="" onerror="this.parentElement.style.display='none'"></div>` : '';
+    modalContent.innerHTML = `
+      ${imgHtml}
+      <div class="modal-body">
+        <span class="modal-code mono">${item._cat.code} · ${escapeHtml(item._cat.label)}</span>
+        <h3 class="modal-title">${escapeHtml(item.title)}</h3>
+        <div class="modal-meta-line mono">${escapeHtml(item.meta||'')}</div>
+        <div class="modal-desc" id="modalDesc">${escapeHtml(truncate(item.desc||'No description available.', 500))}</div>
+        <div class="modal-actions" id="modalActions">
+          ${item._cat.id==='games' ? `<a class="btn btn-brass" href="https://archive.org/embed/${item.id}" target="_blank" rel="noopener">Play in browser ↗ <small>emulated</small></a>` : ''}
+          <a class="btn btn-outline" href="${item.detailUrl}" target="_blank" rel="noopener">View original record ↗</a>
+          <div id="downloadArea"></div>
+        </div>
+      </div>
+    `;
+    modalBackdrop.classList.add('open');
+
+    const downloadArea = $('#downloadArea');
+    if(item.download){
+      downloadArea.innerHTML = `<a class="btn btn-primary" href="${item.download}" target="_blank" rel="noopener" download>Download <small>full resolution / file</small></a>`;
+    } else if(item._source==='archive'){
+      downloadArea.innerHTML = `<div class="state-msg" style="padding:14px 0;"><div class="spinner" style="width:16px;height:16px;"></div>Checking available files…</div>`;
+      try{
+        const res = await fetch(`https://archive.org/metadata/${item.id}`);
+        const data = await res.json();
+        const files = (data.files || []).filter(f => item._cat.fileExts.some(ext => (f.name||'').toLowerCase().endsWith('.'+ext)));
+        if(files.length===0){
+          downloadArea.innerHTML = `<div class="modal-meta-line mono">No direct download file found — use the original record link above.</div>`;
+        } else {
+          const seen = new Set();
+          const list = files.filter(f=>{
+            const ext = f.name.split('.').pop().toLowerCase();
+            if(seen.has(ext)) return false; seen.add(ext); return true;
+          }).slice(0,4);
+          downloadArea.innerHTML = `<div class="file-list">${list.map(f=>{
+            const ext = f.name.split('.').pop().toUpperCase();
+            const size = f.size ? (Math.round(parseInt(f.size,10)/1024/1024*10)/10 + ' MB') : '';
+            return `<a class="btn btn-primary" href="https://archive.org/download/${item.id}/${encodeURIComponent(f.name)}" target="_blank" rel="noopener">Download ${ext} <small>${size}</small></a>`;
+          }).join('')}</div>`;
+        }
+      }catch(e){
+        downloadArea.innerHTML = `<div class="modal-meta-line mono">Couldn't check files — use the original record link above.</div>`;
+      }
+    } else if(item._source==='nasa'){
+      downloadArea.innerHTML = `<div class="state-msg" style="padding:14px 0;"><div class="spinner" style="width:16px;height:16px;"></div>Checking available files…</div>`;
+      try{
+        const res = await fetch(`https://images-api.nasa.gov/asset/${item._nasaId}`);
+        const data = await res.json();
+        const files = (data.collection && data.collection.items) || [];
+        const best = files.find(f=>/~orig\.|~large\./.test(f.href)) || files[files.length-1];
+        if(best){
+          downloadArea.innerHTML = `<a class="btn btn-primary" href="${best.href}" target="_blank" rel="noopener" download>Download original <small>NASA / public domain</small></a>`;
+        } else {
+          downloadArea.innerHTML = `<div class="modal-meta-line mono">No direct file found — use the original record link above.</div>`;
+        }
+      }catch(e){
+        downloadArea.innerHTML = `<div class="modal-meta-line mono">Couldn't check files — use the original record link above.</div>`;
+      }
+    } else {
+      downloadArea.innerHTML = `<div class="modal-meta-line mono">No direct download available — use the original record link above.</div>`;
+    }
+  }
+
+  renderHome();
+  goHome();
+})();
+</script>
+</body>
+</html>
